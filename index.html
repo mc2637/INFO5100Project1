@@ -1,5 +1,39 @@
 <html>
-<p>Something</p>
-<p>Step 2</p>
+<head>
+<title>Project 1 - INFO 5100 - Data-driven Web Pages</title>
+<style>
+body {font-family: 'Alegreya Sans', Calibri, sans-serif; }
+svg {border: solid #cc 1px; }
+</style>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+</head>
+
+<body>
+<p> Group members: Ming Cheng, Yue Xu, Chawisara Uswachoke </p>
+
+<script>
+//Data Visualization Coding
+
+//Clean the data
+var languageData;
+var rawData; 
+
+//applied to all rows, select 5 columns, change names, and convert strings to numbers. 
+function parseLine(line){
+	return{
+		Language: line["Name in English"], //name of the language
+		Latitude: Number(line["Latitude"]),
+		Longitude: Number(line["Longitude"]),
+		SpeakersNo: Number(line["Number of speakers"]),
+		Degree: line["Degree of endangerment"]
+	};
+}
+
+d3.csv("data.csv", parseLine, function(data){
+	rawData = data;
+});
+
+</script>
+</body>
 
 </html>
