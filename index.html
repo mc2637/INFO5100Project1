@@ -42,7 +42,6 @@
 		.defer(d3.csv, "data.csv", parseRow)
 		.await(function(error, data){
 			rawData = data;
-			countries = topojson.feature(rawData, rawData.objects.countries);
 			showMap();
 
 		});
@@ -57,7 +56,6 @@
 			.attr("d", function(country){
 				return pathGenerator(country);
 			});
-
 
 		}
 		</script>
