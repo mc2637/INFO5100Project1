@@ -22,18 +22,19 @@
 		var svg = d3.select("#map");
 
 		var projection = d3.geoNaturalEarth();
-		var rawData;
+		var mapData;
 		var countries;
 		var languageData;
 
 		//applied to all rows, select 5 columns, change names, and convert strings to numbers. 
 		var parseRow = function(line) {
+		
 			return{
 				Language: line["Name in English"], //name of the language
 				Latitude: Number(line["Latitude"]),
 				Longitude: Number(line["Longitude"]),
 				SpeakersNo: Number(line["Number of speakers"]),
-				Degree: line["Degree of endangerment"]
+				Degree: line["Degree of endangerment"],
 			}
 		};
 
@@ -47,6 +48,16 @@
 			showMap();
 
 		});
+
+		//create new set of coordinates for language locations
+		var coordinates = function(data){
+			var result = [];
+			data.forEach(function(d){
+				result.push([d.Longitude, d.Latitude]);
+			});
+
+			return result;
+		}
 
 		function showMap() {
 
