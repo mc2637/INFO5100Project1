@@ -1,4 +1,5 @@
 <html>
+
 <head>
 <title>Project 1 - INFO 5100 - Data-driven Web Pages</title>
 <style>
@@ -34,6 +35,62 @@ d3.csv("data.csv", parseLine, function(data){
 });
 
 </script>
+=======
+<title>Extinct Languages</title>
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="http://d3js.org/topojson.v2.min.js"></script>
+<script src="https://d3js.org/d3-array.v1.min.js"></script>
+<script src="https://d3js.org/d3-geo.v1.min.js"></script>
+<script src="https://d3js.org/d3-geo-projection.v1.min.js"></script>
+
+<style>
+	body { font-family: "Calibri", sans-serif; }
+	svg { border: solid grey 1px; }
+	path.country { fill: #ccc; stroke: #888;; }
+</style>
+
+<body>
+	<p>Map<br>
+		<svg id="map" height="600" width="1200"></svg>
+		<script>
+		var svg = d3.select("#map");
+
+		var projection = d3.geoNaturalEarth();
+		var rawData;
+		var countries;
+
+		var parseRow = function(row) {
+			row.FIPS=Number(row.FIPS);
+			return row;
+		}
+
+		d3.queue()
+		.defer(d3.json, "world-50m.json")
+		.defer(d3.csv, "data.csv", parseRow)
+		.await(function(error, data){
+			rawData = data;
+			countries = topojson.feature(rawData, rawData.objects.countries);
+			showMap();
+
+		});
+
+		function showMap() {
+
+			projection.fitExtent([[0,0], [svg.attr("width"), svg.attr("height")]], countries);
+			pathGenerator = d3.geoPath().projection(projection);
+
+			var paths=svg.selectAll("path.country").data(countries.features);
+			paths.enter().append("path").attr("class","country")
+			.attr("d", function(country){
+				return pathGenerator(country);
+			});
+
+
+		}
+		</script>
+	</p>
+>>>>>>> origin/master
 </body>
 
 </html>
