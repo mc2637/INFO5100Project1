@@ -43,9 +43,7 @@
 		.await(function(error, worldMapData, rawLanguage){
 			mapData = worldMapData;
 			countries = topojson.feature(mapData, mapData.objects.countries);
-
-			languageData=d3.map(rawLanguage, function(d){return d});
-			
+			languageData=rawLanguage;
 			showMap();
 
 		});
