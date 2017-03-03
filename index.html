@@ -19,18 +19,20 @@
 	<p style="text-align: center;"> Group members: Ming Cheng, Yue Xu, Chawisara Uswachoke </p>
 	<p><br>
 		<svg id="map" height="600" width="1200"></svg>
-		<svg id="USmap" height="600" width="800"></svg>
+		<svg id="USmap" height="600" width="900"></svg>
 		<script>
 
 		var svgWorldMap = d3.select("#map");
 		var svgUSmap=d3.select("#USmap");
 
-		var projection = d3.geoNaturalEarth();
+		var worldProjection = d3.geoNaturalEarth();
+		var pathGenerator = d3.geoPath().projection(worldProjection);
 		var mapData;
 		var countries;
 		var languageData;
 
 		var USprojection = d3.geoAlbersUsa();
+		var USpathGenerator = d3.geoPath().projection(USprojection);
 		var states;
 
 		//applied to all rows, select 5 columns, change names, and convert strings to numbers. 
@@ -42,6 +44,7 @@
 				Longitude: Number(line["Longitude"]),
 				SpeakersNo: Number(line["Number of speakers"]),
 				Degree: line["Degree of endangerment"],
+				Country: line["Countries"],
 			}
 		};
 
@@ -87,11 +90,43 @@
 			return result;
 		}
 
+<<<<<<< HEAD
+=======
+		//create new set of coordinates for language locations + colors
+		var USdataPoints = function(data){
+			var result = [];
+			data.forEach(function(d){
+
+				if(d.Country == "United States of America"){
+					switch(d.Degree){
+						case "Extinct":
+							result.push([d.Longitude, d.Latitude, colors[0]]);
+							break;
+						case "Critically endangered":
+							result.push([d.Longitude, d.Latitude, colors[1]]);
+							break;
+						case "Severely endangered":
+							result.push([d.Longitude, d.Latitude, colors[2]]);
+							break;
+						case "Definitely endangered":
+							result.push([d.Longitude, d.Latitude, colors[3]]);
+							break;
+						case "Vulnerable":
+							result.push([d.Longitude, d.Latitude, colors[4]]);
+							break;
+					}
+				}
+			});
+
+			console.log(result);
+
+			return result;
+		}
+>>>>>>> origin/master
 
 		function showMap(languageData) {
 
-			projection.fitExtent([[0,0], [svgWorldMap.attr("width"), svgWorldMap.attr("height")]], countries);
-			var pathGenerator = d3.geoPath().projection(projection);
+			worldProjection.fitExtent([[0,0], [svgWorldMap.attr("width"), svgWorldMap.attr("height")]], countries);
 
 			var paths=svgWorldMap.selectAll("path.country").data(countries.features);
 			paths.enter().append("path").attr("class","country")
@@ -104,8 +139,8 @@
 			interestingPoints.forEach(function (points) {
 
 				svgWorldMap.append("circle")
-				.attr("cx", projection(points)[0])
-				.attr("cy", projection(points)[1])
+				.attr("cx", worldProjection(points)[0])
+				.attr("cy", worldProjection(points)[1])
 				.attr("r", 3)
 				.style("opacity", 0.5)
 				.style("fill", points[2]);
@@ -174,25 +209,28 @@
 
 		function showUSmap(languageData){
 			USprojection.fitExtent([[0,0], [svgUSmap.attr("width"), svgUSmap.attr("height")]], states);
-			var USpathGenerator = d3.geoPath().projection(USprojection);
 
 			var paths=svgUSmap.selectAll("path.country").data(states.features);
 			paths.enter().append("path").attr("class","country")
+			.merge(paths)
 			.attr("d", function(country){
 				return USpathGenerator(country);
 			});
 
-			var interestingPoints = dataPoints(languageData);
+			var interestingPoints = USdataPoints(languageData);
 
 			interestingPoints.forEach(function (points) {
+				var point=[points[0],points[1]];
 				svgUSmap.append("circle")
-				.attr("cx", USprojection(points)[0])
-				.attr("cy", USprojection(points)[1])
+				.attr("cx", USprojection(point)[0])
+				.attr("cy", USprojection(point)[1])
 				.attr("r", 3)
 				.style("opacity", 0.5)
 				.style("fill", points[2]);
 				
 			});
+
+
 		}
 
 
