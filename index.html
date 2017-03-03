@@ -90,27 +90,28 @@
 			return result;
 		}
 
-		//create new set of coordinates for language locations + colors
+		//create new set of coordinates for language locations + colors + number of speakers
 		var USdataPoints = function(data){
+
 			var result = [];
 			data.forEach(function(d){
 
 				if(d.Country == "United States of America"){
 					switch(d.Degree){
 						case "Extinct":
-							result.push([d.Longitude, d.Latitude, colors[0]]);
+							result.push([d.Longitude, d.Latitude, colors[0], d.SpeakersNo]);
 							break;
 						case "Critically endangered":
-							result.push([d.Longitude, d.Latitude, colors[1]]);
+							result.push([d.Longitude, d.Latitude, colors[1], d.SpeakersNo]);
 							break;
 						case "Severely endangered":
-							result.push([d.Longitude, d.Latitude, colors[2]]);
+							result.push([d.Longitude, d.Latitude, colors[2], d.SpeakersNo]);
 							break;
 						case "Definitely endangered":
-							result.push([d.Longitude, d.Latitude, colors[3]]);
+							result.push([d.Longitude, d.Latitude, colors[3], d.SpeakersNo]);
 							break;
 						case "Vulnerable":
-							result.push([d.Longitude, d.Latitude, colors[4]]);
+							result.push([d.Longitude, d.Latitude, colors[4], d.SpeakersNo]);
 							break;
 					}
 				}
@@ -120,7 +121,7 @@
 
 			return result;
 		}
-		
+
 		function showMap(languageData) {
 
 			worldProjection.fitExtent([[0,0], [svgWorldMap.attr("width"), svgWorldMap.attr("height")]], countries);
@@ -207,6 +208,10 @@
 		function showUSmap(languageData){
 			USprojection.fitExtent([[0,0], [svgUSmap.attr("width"), svgUSmap.attr("height")]], states);
 
+			var languageExtent = d3.extent(languageData, function (d) { return d.SpeakersNo; });
+			var languageScale = d3.scaleLinear().domain(languageExtent).range([3,2000]);
+			//console.log(languageScale(100000));
+
 			var paths=svgUSmap.selectAll("path.country").data(states.features);
 			paths.enter().append("path").attr("class","country")
 			.merge(paths)
@@ -221,7 +226,7 @@
 				svgUSmap.append("circle")
 				.attr("cx", USprojection(point)[0])
 				.attr("cy", USprojection(point)[1])
-				.attr("r", 3)
+				.attr("r", languageScale(points[3]))
 				.style("opacity", 0.5)
 				.style("fill", points[2]);
 				
