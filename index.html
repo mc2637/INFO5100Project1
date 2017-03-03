@@ -15,8 +15,9 @@
 </head>
 
 <body>
-	<p> Group members: Ming Cheng, Yue Xu, Chawisara Uswachoke </p>
-	<p>Map<br>
+	<h1 style="text-align: center; padding-top: 20px; color: #778899;">Extinct and Endangered Languages Around the World</h1>
+	<p style="text-align: center;"> Group members: Ming Cheng, Yue Xu, Chawisara Uswachoke </p>
+	<p><br>
 		<svg id="map" height="600" width="1200"></svg>
 		<svg id="USmap" height="600" width="800"></svg>
 		<script>
@@ -86,6 +87,7 @@
 			return result;
 		}
 
+
 		function showMap(languageData) {
 
 			projection.fitExtent([[0,0], [svgWorldMap.attr("width"), svgWorldMap.attr("height")]], countries);
@@ -108,9 +110,66 @@
 				.style("opacity", 0.5)
 				.style("fill", points[2]);
 
+				//Extinct languages
+				svgWorldMap.append("circle")
+				.attr("r", 5)
+				.attr("cx", 25)
+				.attr("cy", 430)
+				.style("fill", "#FFC300");
+
+				svgWorldMap.append("text")
+				.attr("x", 35)
+				.attr("y", 435)
+				.text("Extinct Languages");
+
+				//Critically Endangered Languages
+				svgWorldMap.append("circle")
+				.attr("r", 5)
+				.attr("cx", 25)
+				.attr("cy", 455)
+				.style("fill", "#FF5733");
+
+				svgWorldMap.append("text")
+				.attr("x", 35)
+				.attr("y", 460)
+				.text("Critically Endangered Languages");
+
+				//Severely Endangered Languages
+				svgWorldMap.append("circle")
+				.attr("r", 5)
+				.attr("cx", 25)
+				.attr("cy", 480)
+				.style("fill", "#C70039");
+
+				svgWorldMap.append("text")
+				.attr("x", 35)
+				.attr("y", 485)
+				.text("Severely Endangered Languages");
+
+				//Definitely Endangered Languages
+				svgWorldMap.append("circle")
+				.attr("r", 5)
+				.attr("cx", 25)
+				.attr("cy", 505)
+				.style("fill", "#900C3F");
+
+				svgWorldMap.append("text")
+				.attr("x", 35)
+				.attr("y", 510)
+				.text("Definitely Endangered Languages");
+
+				//Vulnerable languages
+				svgWorldMap.append("circle")
+				.attr("r", 5)
+				.attr("cx", 25)
+				.attr("cy", 530)
+				.style("fill", "#581845");
+
+				svgWorldMap.append("text")
+				.attr("x", 35)
+				.attr("y", 535)
+				.text("Vulnerable Languages");
 			});
-
-
 		}
 
 		function showUSmap(languageData){
@@ -132,12 +191,15 @@
 				.attr("r", 3)
 				.style("opacity", 0.5)
 				.style("fill", points[2]);
+				
 			});
 		}
 
 
 		</script>
 	</p>
+</svg>
+<P>Extinct Languages</P>
 </body>
 
 </html>
