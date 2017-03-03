@@ -26,6 +26,8 @@
 		// var countries;
 		var languageData;
 
+		console.log("Ming's version");
+
 		//applied to all rows, select 5 columns, change names, and convert strings to numbers. 
 		var parseRow = function(line) {
 		
@@ -59,6 +61,12 @@
 								.domain(["Vulnerable", "Definitely endangered", "Critically endangered", "Severely endangered", "Extinct" ])
 								.range(["Orange","Coral","OrangeRed","FireBrick","DarkGrey"]);
 
+			//scale the size of speakers of languages
+			var speakerExtend = d3.extent(languageData, function(d){return d.SpeakersNo;});
+			var speakerScale = d3.scaleLinear()
+								.domain(speakerExtend)
+								.range([10, 50]);
+
 			//plot data on the screen
 			var text = svg.selectAll("text")
 						.data(languageData)
@@ -74,7 +82,8 @@
 								})
 								.text(function(d){return d.Language;})
 								.attr("fill", function(d){return degreeScale(d.Degree);})
-								.attr("font-size", "10px");
+								.attr("font-size", function(d){return speakerScale(d.SpeakersNo);})
+								.style("text-anchor", "middle");
 
 			// languageData.forEach(function(data){
 			// 	svg.append("text")
