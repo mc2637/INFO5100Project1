@@ -45,7 +45,7 @@
 			mapData = worldMapData;
 			countries = topojson.feature(mapData, mapData.objects.countries);
 			languageData=rawLanguage;
-			showMap();
+			showMap(languageData);
 
 		});
 
@@ -59,7 +59,7 @@
 			return result;
 		}
 
-		function showMap() {
+		function showMap(languageData) {
 
 			projection.fitExtent([[0,0], [svg.attr("width"), svg.attr("height")]], countries);
 			pathGenerator = d3.geoPath().projection(projection);
@@ -69,6 +69,20 @@
 			.attr("d", function(country){
 				return pathGenerator(country);
 			});
+
+			var interestingPoints = coordinates(languageData);
+
+			interestingPoints.forEach(function (points) {
+
+				svg.append("circle")
+				.attr("cx", projection(points)[0])
+				.attr("cy", projection(points)[1])
+				.attr("r", 3)
+				.style("opacity", 0.5)
+				.style("fill", "red");
+
+			});
+
 
 		}
 		</script>
