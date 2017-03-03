@@ -1,0 +1,151 @@
+<html>
+
+<head>
+<title>Project 1 - INFO 5100 - Data-driven Web Pages</title>
+<style>
+	body {font-family: 'Alegreya Sans', Calibri, sans-serif; }
+	svg {border: solid #ccc 1px; }
+	path.country { fill: #ccc; stroke: #888; }
+</style>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="http://d3js.org/topojson.v2.min.js"></script>
+<script src="https://d3js.org/d3-array.v1.min.js"></script>
+<script src="https://d3js.org/d3-geo.v1.min.js"></script>
+<script src="https://d3js.org/d3-geo-projection.v1.min.js"></script>
+</head>
+
+<body>
+	<p> Group members: Ming Cheng, Yue Xu, Chawisara Uswachoke </p>
+	<p>Map<br>
+		<svg id="map" height="600" width="1200"></svg>
+		<script>
+		var svg = d3.select("#map");
+
+		// var projection = d3.geoNaturalEarth();
+		// var mapData;
+		// var countries;
+		var languageData;
+
+		//applied to all rows, select 5 columns, change names, and convert strings to numbers. 
+		var parseRow = function(line) {
+		
+			return{
+				Language: line["Name in English"], //name of the language
+				Latitude: Number(line["Latitude"]),
+				Longitude: Number(line["Longitude"]),
+				SpeakersNo: Number(line["Number of speakers"]),
+				Degree: line["Degree of endangerment"],
+			}
+		};
+
+		d3.csv("data.csv", parseRow, function(error, data){
+			//load data file and store in languageData
+			languageData = data;
+
+			//scale the Longtitude as the x-Axis
+			var longitudeExtent = d3.extent(languageData, function(d){return d.Longitude;});
+			var longitudeScale = d3.scaleLinear()
+									.domain(longitudeExtent)
+									.range([50, 1150]);
+
+			//scale the Latitude as the y-Axis
+			var latitudeExtend = d3.extent(languageData, function(d){return d.Latitude;});
+			var latitudeScale = d3.scaleLinear()
+									.domain(latitudeExtend)
+									.range([550, 50]);
+
+			//scale the venerablility of languages
+			var degreeScale = d3.scaleOrdinal()
+								.domain(["Vulnerable", "Definitely endangered", "Critically endangered", "Severely endangered", "Extinct" ])
+								.range(["Orange","Coral","OrangeRed","FireBrick","DarkGrey"]);
+
+			//plot data on the screen
+			var text = svg.selectAll("text")
+						.data(languageData)
+						.enter()
+						.append("text");
+
+			var textLabels = text
+								.attr("x", function(d){ 
+									return longitudeScale(d.Longitude);
+								})
+								.attr("y", function(d){
+									return latitudeScale(d.Latitude);
+								})
+								.text(function(d){return d.Language;})
+								.attr("fill", function(d){return degreeScale(d.Degree);})
+								.attr("font-size", "10px");
+
+			// languageData.forEach(function(data){
+			// 	svg.append("text")
+			// 		.attr("x", longtetudeScale(data.Longitude))
+			// 		.attr("y", latitudeScale(data.Latitude))
+			// 		.attr("fill", degreeScale(data.Degree))
+			// 		.text();
+			//})
+
+		})
+
+
+
+		// d3.queue()
+		// .defer(d3.json, "world-50m.json")
+		// .defer(d3.csv, "data.csv", parseRow)
+		// .await(function(error, worldMapData, rawLanguage){
+		// 	mapData = worldMapData;
+		// 	countries = topojson.feature(mapData, mapData.objects.countries);
+		// 	languageData=rawLanguage;
+		// 	showMap(languageData);
+
+		// });
+
+		// //create new set of coordinates for language locations
+		// var coordinates = function(data){
+		// 	var result = [];
+		// 	data.forEach(function(d){
+		// 		result.push([d.Longitude, d.Latitude]);
+		// 	});
+
+		// 	return result;
+		// }
+
+		// function showMap(languageData) {
+
+		// 	projection.fitExtent([[0,0], [svg.attr("width"), svg.attr("height")]], countries);
+		// 	pathGenerator = d3.geoPath().projection(projection);
+
+		// 	var paths=svg.selectAll("path.country").data(countries.features);
+		// 	paths.enter().append("path").attr("class","country")
+		// 	.attr("d", function(country){
+		// 		return pathGenerator(country);
+		// 	});
+
+		// 	var interestingPoints = coordinates(languageData);
+
+		// 	interestingPoints.forEach(function (points) {
+
+		// 	// 	// svg.append("circle")
+		// 	// 	// .attr("cx", projection(points)[0])
+		// 	// 	// .attr("cy", projection(points)[1])
+		// 	// 	// .attr("r", 3)
+		// 	// 	// .style("opacity", 0.5)
+		// 	// 	// .style("fill", "red");
+
+		// 		var text = svg.selectAll("text")
+		// 				.data(languageData)
+		// 				.enter()
+		// 				.append("text");
+
+		// 		var textLabels = text.attr("x", projection(points)[0])
+		// 						.attr("y", projection(points)[1])
+		// 						.text(function(d){return d.Language;});
+
+		// 	 });
+
+			
+		//}
+		</script>
+	</p>
+</body>
+
+</html>
