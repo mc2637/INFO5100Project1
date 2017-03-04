@@ -1,0 +1,88 @@
+<html>
+
+<head>
+<title>Project 1 - INFO 5100 - Data-driven Web Pages</title>
+<style>
+	body {font-family: 'Alegreya Sans', Calibri, sans-serif; }
+	svg {border: solid #cc 1px; }
+	path.country { fill: #ccc; stroke: #888;; }
+</style>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="http://d3js.org/topojson.v2.min.js"></script>
+<script src="https://d3js.org/d3-array.v1.min.js"></script>
+<script src="https://d3js.org/d3-geo.v1.min.js"></script>
+<script src="https://d3js.org/d3-geo-projection.v1.min.js"></script>
+</head>
+
+<body>
+	<h1 style="text-align: center; padding-top: 20px; color: #778899;">Extinct and Endangered Languages Around the World</h1>
+	<p style="text-align: center;"> Group members: Ming Cheng, Yue Xu, Chawisara Uswachoke </p>
+	<p>
+		<svg id="timeline" height="400" width="1200"></svg>
+		<script>
+
+		var svg = d3.select("#timeline");
+		var data;
+
+		var parseRow = function(line) {
+		
+			return{
+				Language: line["Name in English"], //name of the language
+			    Year: line["Year of Extinction"],
+			    Frequency: line["Frequency"]
+			}
+		};
+
+		d3.queue()
+		.defer(d3.csv, "extinction-timeline.csv", parseRow)
+		.await(function(error, extinctionData){
+			data=extinctionData;
+			showTimeline(data);
+		});
+
+		var parseTime = d3.timeParse("%Y");
+
+		function showTimeline(data){
+			var yearExtent = d3.extent(data, function (d) { return parseTime(d.Year); });
+			var timeScale = d3.scaleTime().domain(yearExtent).range([20, 1180]);
+			var timeAxis = d3.axisBottom(timeScale);
+
+			svg.append("g").attr("transform","translate(0,200)").call(timeAxis);
+
+			var i=190;
+			var prevYear;
+
+			data.forEach(function (d) {
+
+				if(prevYear==d.Year){
+					i-=20;
+				}else{
+					i=190;
+					prevYear=d.Year;
+				}
+
+				// svg.append("circle")
+				// .attr("cx", timeScale(parseTime(d.Year)))
+				// .attr("cy", i)
+				// .attr("r", 3)
+				// .style("fill", "red");
+
+				svg.append("text")
+				.attr("x", timeScale(parseTime(d.Year)))
+				.attr("y", i)
+				.style("font-family","Arial")
+				.style("font-size",8)
+				.style("text-anchor","middle")
+				.text(d.Language);
+				
+			});
+		}
+
+
+		</script>
+	</p>
+</svg>
+<P>Extinct Languages</P>
+</body>
+
+</html>
