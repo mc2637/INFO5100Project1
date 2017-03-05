@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Tree graph</title>
+	<style type="text/css">
+		.node circle {
+			fill:#fff;
+			stroke: steelblue;
+			stroke-width: 3px;
+		}
+		.node text {
+			font: 12px sans-serif;
+		}
+		.link {
+			fill: none;
+			stroke: #ccc;
+			stroke-width: 2px;
+		}
+	</style>
+</head>
+<body>
+
+<!--load d3.js library-->
+<script src = "http://d3js.org/d3.v3.min.js"></script>
+
+<script type="text/javascript">
+	var margin = {top: 20, right: 120, bottom: 20, left: 120},
+	width = 960 - margin.right - margin.left,
+	height = 500 - margin.top - margin.bottom;
+
+	var i = 0;
+
+	var tree = d3.layout.tree()
+		.size([height, width]);
+
+	var diagonal = d3.svg.diagonal()
+		.projection(function(d)) {return [d.y, d.x];});
+
+	var svg = d3.select("body").append("svg")
+		.attr("width", width + margin.right + margin.left)
+		.attr("height", height + margin.top + margin.bottom)
+		.append("g")
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+	d3.csv("data.csv", function(error, data)) {
+
+	var dataMap = data.reduce(function(map, node)) {
+		map[node.name] = node;
+		return map;
+	}, {});
+
+	var treeData = [];
+	data.forEach(function(node)) {
+		var parent = dataMap[node.parent];
+		if (parent) {
+			(parent.children || (parent.children = []))
+			.push(node);
+		} else {
+			treeData.push(node);
+		}
+	});
+	
+	root = treeData[0];
+	update(root);
+});
+
+//http://bl.ocks.org/d3noob/fa0f16e271cb191ae85f
+//https://gist.github.com/d3noob/fa0f16e271cb191ae85f
+
+
+</script>
+</body>
+</html>
