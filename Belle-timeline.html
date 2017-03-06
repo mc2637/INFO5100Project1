@@ -61,19 +61,19 @@
 					prevYear=d.Year;
 				}
 
-				// svg.append("circle")
-				// .attr("cx", timeScale(parseTime(d.Year)))
-				// .attr("cy", i)
-				// .attr("r", 3)
-				// .style("fill", "red");
+				svg.append("circle")
+				.attr("cx", timeScale(parseTime(d.Year)))
+				.attr("cy", i)
+				.attr("r", 3)
+				.style("fill", "red");
 
-				svg.append("text")
-				.attr("x", timeScale(parseTime(d.Year)))
-				.attr("y", i)
-				.style("font-family","Arial")
-				.style("font-size",8)
-				.style("text-anchor","middle")
-				.text(d.Language);
+				// svg.append("text")
+				// .attr("x", timeScale(parseTime(d.Year)))
+				// .attr("y", i)
+				// .style("font-family","Arial")
+				// .style("font-size",8)
+				// .style("text-anchor","middle")
+				// .text(d.Language);
 				
 			});
 		}

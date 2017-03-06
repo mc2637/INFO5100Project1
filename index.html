@@ -4,9 +4,9 @@
 <title>Project 1 - INFO 5100 - Data-driven Web Pages</title>
 <style>
 	body {background-color: #ccc; font-family: 'Alegreya Sans', Calibri, sans-serif; }
-	svg {border: solid #cc 1px; }
+	svg {border: solid #ccc 1px; }
 	path.country { fill: #fff; stroke: #888; }
-	#map {display: block; margin:auto; background-color: #ccc;}
+	#map {display: block; margin:auto; background-color: #ccc}
 	#USmap{display: block; margin:auto; background-color: #ccc;}
 </style>
 <script src="https://d3js.org/d3.v4.min.js"></script>
@@ -21,7 +21,7 @@
 	<p style="text-align: center;"> Group members: Ming Cheng, Yue Xu, Chawisara Uswachoke </p>
 	<p><br>
 		<svg id="map" height="600" width="1200"></svg><br><br>
-		<svg id="USmap" height="600" width="900"></svg>
+		<svg id="USmap" height="600" width="1200"></svg>
 		<script>
 
 		var svgWorldMap = d3.select("#map");
@@ -60,7 +60,7 @@
 			states=topojson.feature(USMapData, USMapData.objects.states);
 			languageData=rawLanguage;
 			showMap(languageData);
-			showUSmap(languageData);
+			showUSmap(languageData, states);
 		});
 
 		var colors=["#581845", "#900C3F", "#C70039", "#FF5733",  "#FFC300"];
@@ -142,8 +142,9 @@
 				.attr("cx", worldProjection(points)[0])
 				.attr("cy", worldProjection(points)[1])
 				.attr("r", 3)
-				.style("opacity", 0.5)
-				.style("fill", points[2]);
+				.style("opacity", 0.8)
+				.style("fill", points[2])
+				.style("stroke", "white");
 
 				//Extinct languages
 				svgWorldMap.append("circle")
@@ -207,8 +208,8 @@
 			});
 		}
 
-		function showUSmap(languageData){
-			USprojection.fitExtent([[0,0], [svgUSmap.attr("width"), svgUSmap.attr("height")]], states);
+		function showUSmap(languageData, states){
+			USprojection.fitExtent([[400,0], [svgUSmap.attr("width"), svgUSmap.attr("height")]], states);
 
 			var languageExtent = d3.extent(languageData, function (d) { return d.SpeakersNo; });
 			var languageScale = d3.scaleLinear().domain(languageExtent).range([3,1000]);
@@ -224,21 +225,31 @@
 
 			interestingPoints.forEach(function (points) {
 				var point=[points[0],points[1]];
-				if(points[4]=="Navajo"){
-					svgUSmap.append("circle")
-					.attr("cx", USprojection(point)[0])
-					.attr("cy", USprojection(point)[1])
-					.attr("r", 20)
-					.style("opacity", 0.5)
-					.style("fill", points[2]);
-				}else{
-					svgUSmap.append("circle")
+				// if(points[4]=="Navajo"){
+				// 	svgUSmap.append("circle")
+				// 	.attr("cx", USprojection(point)[0])
+				// 	.attr("cy", USprojection(point)[1])
+				// 	.attr("r", 20)
+				// 	.style("opacity", 0.8)
+				// 	.style("fill", points[2])
+				// 	.style("stroke", "white");
+				// }else{
+				// 	svgUSmap.append("circle")
+				// 	.attr("cx", USprojection(point)[0])
+				// 	.attr("cy", USprojection(point)[1])
+				// 	.attr("r", languageScale(points[3]))
+				// 	.style("opacity", 0.8)
+				// 	.style("fill", points[2])
+				// 	.style("stroke", "white");
+				// }
+
+				svgUSmap.append("circle")
 					.attr("cx", USprojection(point)[0])
 					.attr("cy", USprojection(point)[1])
 					.attr("r", languageScale(points[3]))
-					.style("opacity", 0.5)
-					.style("fill", points[2]);
-				}
+					.style("opacity", 0.8)
+					.style("fill", points[2])
+					.style("stroke", "white");
 
 				//plot text on the map
 				svgUSmap.append("text")	
@@ -246,10 +257,76 @@
 					.attr("y", USprojection(points)[1]-7)
 					.text(points[4])
 					.attr("fill", points[2])
-					.attr("font-size", "8pt")
+					.attr("font-size", "7pt")
 					.style("text-anchor", "middle")
-					.style("opacity", 0.5);
+					.style("opacity", 0.9)
+					.style("stroke", "grey")
+					.style("stroke-width", "0.1px");
 				
+			});
+
+			//paint on top of US map
+			svgUSmap.append("rect")
+			.attr("height",600)
+			.attr("width", 375)
+			.attr("x", 0)
+			.attr("y",0)
+			.style("fill", "#ccc")
+			.style("stroke", "white")
+			.style("stroke-width", "10px");
+
+			svgUSmap.append("svg")
+			.attr("height",600)
+			.attr("width", 375)
+			.attr("x", 0)
+			.attr("y",0)
+			.attr("id","westcoast");
+
+			showWestCoast(d3.select("#westcoast"), languageData, states);
+
+		}
+
+		function showWestCoast(svgUSmap, languageData, states){
+			var USprojection = d3.geoAlbersUsa();
+			var USpathGenerator = d3.geoPath().projection(USprojection);
+			var states;
+
+			USprojection.fitExtent([[-100,-800], [3000,1800]], states);
+
+			var languageExtent = d3.extent(languageData, function (d) { return d.SpeakersNo; });
+			var languageScale = d3.scaleLinear().domain(languageExtent).range([3,1000]);
+
+			var paths=svgUSmap.selectAll("path.country").data(states.features);
+			paths.enter().append("path").attr("class","country")
+			.merge(paths)
+			.attr("d", function(country){
+				return USpathGenerator(country);
+			});
+
+			var interestingPoints = USdataPoints(languageData);
+
+			interestingPoints.forEach(function (points) {
+				var point=[points[0],points[1]];
+
+				svgUSmap.append("circle")
+					.attr("cx", USprojection(point)[0])
+					.attr("cy", USprojection(point)[1])
+					.attr("r", languageScale(points[3]))
+					.style("opacity", 0.8)
+					.style("fill", points[2])
+					.style("stroke", "white");
+
+				//plot text on the map
+				svgUSmap.append("text")	
+					.attr("x", USprojection(points)[0])
+					.attr("y", USprojection(points)[1]-7)
+					.text(points[4])
+					.attr("fill", points[2])
+					.attr("font-size", "7pt")
+					.style("text-anchor", "middle")
+					.style("opacity", 0.9)
+					.style("stroke", "grey")
+					.style("stroke-width", "0.1px");
 				
 			});
 
