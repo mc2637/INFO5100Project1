@@ -3,7 +3,7 @@
 <head>
 <title>Project 1 - INFO 5100 - Data-driven Web Pages</title>
 <style>
-	body {background-color: #ccc; font-family: 'Alegreya Sans', Calibri, sans-serif; }
+	body {background-color: #ccc; font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif; padding-right:60px; padding-left: 60px; }
 	svg {border: solid #ccc 1px; }
 	path.country { fill: #fff; stroke: #888; }
 	#map {display: block; margin:auto; background-color: #ccc}
@@ -17,11 +17,16 @@
 </head>
 
 <body>
-	<h1 style="text-align: center; padding-top: 20px; color: #778899;">Extinct and Endangered Languages Around the World</h1>
-	<p style="text-align: center;"> Group members: Ming Cheng, Yue Xu, Chawisara Uswachoke </p>
-	<p><br>
-		<svg id="map" height="600" width="1200"></svg><br><br>
+	<h1 style="text-align: center; padding-top: 20px; color: #778899; text-shadow: -1px 0 #fff,0 1px #fff,1px 0 #fff,0 -1px #fff;">Extinct &#38; Endangered Languages Around the World</h1>
+	<p style="text-align: center; color:black"> <b>Group members</b>: Ming Cheng, Yue Xu, Chawisara Uswachoke </p>
+	<p><br><br>
+		<svg id="map" height="600" width="1200"></svg><br>
+		The map above shows the distribution of the extinct and endangered languages around the world. We can observe that every continent (with Antarctica as an exception, of course) and almost every country has one or more languages that are either vulnerable, endangered, or extinct.
+		<br><br>Now, let's narrow down the scope for a bit and zoom into our country -- the United States of America:
+		<br><br>
 		<svg id="USmap" height="600" width="1200"></svg>
+		<br>
+		Wow, the extinct languages are so concentrated in the west coast.
 		<script>
 
 		var svgWorldMap = d3.select("#map");
@@ -151,7 +156,8 @@
 				.attr("r", 5)
 				.attr("cx", 25)
 				.attr("cy", 430)
-				.style("fill", colors[0]);
+				.style("fill", colors[0])
+				.style("stroke", "white");
 
 				svgWorldMap.append("text")
 				.attr("x", 35)
@@ -163,7 +169,8 @@
 				.attr("r", 5)
 				.attr("cx", 25)
 				.attr("cy", 455)
-				.style("fill", colors[1]);
+				.style("fill", colors[1])
+				.style("stroke", "white");
 
 				svgWorldMap.append("text")
 				.attr("x", 35)
@@ -175,7 +182,8 @@
 				.attr("r", 5)
 				.attr("cx", 25)
 				.attr("cy", 480)
-				.style("fill", colors[2]);
+				.style("fill", colors[2])
+				.style("stroke", "white");
 
 				svgWorldMap.append("text")
 				.attr("x", 35)
@@ -187,7 +195,8 @@
 				.attr("r", 5)
 				.attr("cx", 25)
 				.attr("cy", 505)
-				.style("fill", colors[3]);
+				.style("fill", colors[3])
+				.style("stroke", "white");
 
 				svgWorldMap.append("text")
 				.attr("x", 35)
@@ -199,7 +208,8 @@
 				.attr("r", 5)
 				.attr("cx", 25)
 				.attr("cy", 530)
-				.style("fill", colors[4]);
+				.style("fill", colors[4])
+				.style("stroke", "white");
 
 				svgWorldMap.append("text")
 				.attr("x", 35)
@@ -212,7 +222,7 @@
 			USprojection.fitExtent([[400,0], [svgUSmap.attr("width"), svgUSmap.attr("height")]], states);
 
 			var languageExtent = d3.extent(languageData, function (d) { return d.SpeakersNo; });
-			var languageScale = d3.scaleLinear().domain(languageExtent).range([3,1000]);
+			var languageScale = d3.scaleLinear().domain(languageExtent).range([3,4000]);
 
 			var paths=svgUSmap.selectAll("path.country").data(states.features);
 			paths.enter().append("path").attr("class","country")
@@ -252,18 +262,37 @@
 					.style("stroke", "white");
 
 				//plot text on the map
-				svgUSmap.append("text")	
-					.attr("x", USprojection(points)[0])
-					.attr("y", USprojection(points)[1]-7)
-					.text(points[4])
-					.attr("fill", points[2])
-					.attr("font-size", "7pt")
-					.style("text-anchor", "middle")
-					.style("opacity", 0.9)
-					.style("stroke", "grey")
-					.style("stroke-width", "0.1px");
+				// svgUSmap.append("text")	
+				// 	.attr("x", USprojection(points)[0])
+				// 	.attr("y", USprojection(points)[1]-7)
+				// 	.text(points[4])
+				// 	.attr("fill", points[2])
+				// 	.attr("font-size", "7pt")
+				// 	.style("text-anchor", "middle")
+				// 	.style("opacity", 0.9)
+				// 	.style("stroke", "grey")
+				// 	.style("stroke-width", "0.1px");
 				
 			});
+
+			//magnifying lines
+			svgUSmap.append("line")
+				.attr("x1", 500)
+				.attr("y1", 160)
+				.attr("x2", 379)
+				.attr("y2", 0)
+				.style("stroke","#f0f0f0")
+				.style("stroke-width","3px")
+				.style("opacity", 0.8);
+
+			svgUSmap.append("line")
+				.attr("x1", 500)
+				.attr("y1", 300)
+				.attr("x2", 379)
+				.attr("y2", 600)
+				.style("stroke","#f0f0f0")
+				.style("stroke-width","3px")
+				.style("opacity", 0.9);
 
 			//paint on top of US map
 			svgUSmap.append("rect")
@@ -275,11 +304,12 @@
 			.style("stroke", "white")
 			.style("stroke-width", "10px");
 
+			//zoomed in map of west coast
 			svgUSmap.append("svg")
-			.attr("height",600)
+			.attr("height",593)
 			.attr("width", 375)
 			.attr("x", 0)
-			.attr("y",0)
+			.attr("y",4)
 			.attr("id","westcoast");
 
 			showWestCoast(d3.select("#westcoast"), languageData, states);
@@ -294,7 +324,7 @@
 			USprojection.fitExtent([[-100,-800], [3000,1800]], states);
 
 			var languageExtent = d3.extent(languageData, function (d) { return d.SpeakersNo; });
-			var languageScale = d3.scaleLinear().domain(languageExtent).range([3,1000]);
+			var languageScale = d3.scaleLinear().domain(languageExtent).range([3,4000]);
 
 			var paths=svgUSmap.selectAll("path.country").data(states.features);
 			paths.enter().append("path").attr("class","country")
@@ -322,7 +352,7 @@
 					.attr("y", USprojection(points)[1]-7)
 					.text(points[4])
 					.attr("fill", points[2])
-					.attr("font-size", "7pt")
+					.attr("font-size", "9pt")
 					.style("text-anchor", "middle")
 					.style("opacity", 0.9)
 					.style("stroke", "grey")
