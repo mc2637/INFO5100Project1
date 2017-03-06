@@ -3,9 +3,11 @@
 <head>
 <title>Project 1 - INFO 5100 - Data-driven Web Pages</title>
 <style>
-	body {font-family: 'Alegreya Sans', Calibri, sans-serif; }
+	body {background-color: #ccc; font-family: 'Alegreya Sans', Calibri, sans-serif; }
 	svg {border: solid #cc 1px; }
-	path.country { fill: #ccc; stroke: #888;; }
+	path.country { fill: #fff; stroke: #888; }
+	#map {display: block; margin:auto; background-color: #ccc;}
+	#USmap{display: block; margin:auto; background-color: #ccc;}
 </style>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="http://d3js.org/topojson.v2.min.js"></script>
@@ -18,7 +20,7 @@
 	<h1 style="text-align: center; padding-top: 20px; color: #778899;">Extinct and Endangered Languages Around the World</h1>
 	<p style="text-align: center;"> Group members: Ming Cheng, Yue Xu, Chawisara Uswachoke </p>
 	<p><br>
-		<svg id="map" height="600" width="1200"></svg>
+		<svg id="map" height="600" width="1200"></svg><br><br>
 		<svg id="USmap" height="600" width="900"></svg>
 		<script>
 
@@ -257,7 +259,7 @@
 		</script>
 	</p>
 </svg>
-<P>Extinct Languages</P>
+<P></P>
 </body>
 
 </html>
