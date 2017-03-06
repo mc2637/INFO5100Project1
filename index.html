@@ -70,19 +70,19 @@
 			data.forEach(function(d){
 				switch(d.Degree){
 					case "Extinct":
-						result.push([d.Longitude, d.Latitude, colors[0]]);
+						result.push([d.Longitude, d.Latitude, colors[0], d.Language]);
 						break;
 					case "Critically endangered":
-						result.push([d.Longitude, d.Latitude, colors[1]]);
+						result.push([d.Longitude, d.Latitude, colors[1], d.Language]);
 						break;
 					case "Severely endangered":
-						result.push([d.Longitude, d.Latitude, colors[2]]);
+						result.push([d.Longitude, d.Latitude, colors[2], d.Language]);
 						break;
 					case "Definitely endangered":
-						result.push([d.Longitude, d.Latitude, colors[3]]);
+						result.push([d.Longitude, d.Latitude, colors[3], d.Language]);
 						break;
 					case "Vulnerable":
-						result.push([d.Longitude, d.Latitude, colors[4]]);
+						result.push([d.Longitude, d.Latitude, colors[4], d.Language]);
 						break;
 				}
 			});
@@ -99,19 +99,19 @@
 				if(d.Country == "United States of America"){
 					switch(d.Degree){
 						case "Extinct":
-							result.push([d.Longitude, d.Latitude, colors[0], d.SpeakersNo]);
+							result.push([d.Longitude, d.Latitude, colors[0], d.SpeakersNo, d.Language]);
 							break;
 						case "Critically endangered":
-							result.push([d.Longitude, d.Latitude, colors[1], d.SpeakersNo]);
+							result.push([d.Longitude, d.Latitude, colors[1], d.SpeakersNo, d.Language]);
 							break;
 						case "Severely endangered":
-							result.push([d.Longitude, d.Latitude, colors[2], d.SpeakersNo]);
+							result.push([d.Longitude, d.Latitude, colors[2], d.SpeakersNo, d.Language]);
 							break;
 						case "Definitely endangered":
-							result.push([d.Longitude, d.Latitude, colors[3], d.SpeakersNo]);
+							result.push([d.Longitude, d.Latitude, colors[3], d.SpeakersNo, d.Language]);
 							break;
 						case "Vulnerable":
-							result.push([d.Longitude, d.Latitude, colors[4], d.SpeakersNo]);
+							result.push([d.Longitude, d.Latitude, colors[4], d.SpeakersNo, d.Language]);
 							break;
 					}
 				}
@@ -222,12 +222,32 @@
 
 			interestingPoints.forEach(function (points) {
 				var point=[points[0],points[1]];
-				svgUSmap.append("circle")
-				.attr("cx", USprojection(point)[0])
-				.attr("cy", USprojection(point)[1])
-				.attr("r", languageScale(points[3]))
-				.style("opacity", 0.5)
-				.style("fill", points[2]);
+				if(points[4]=="Navajo"){
+					svgUSmap.append("circle")
+					.attr("cx", USprojection(point)[0])
+					.attr("cy", USprojection(point)[1])
+					.attr("r", 20)
+					.style("opacity", 0.5)
+					.style("fill", points[2]);
+				}else{
+					svgUSmap.append("circle")
+					.attr("cx", USprojection(point)[0])
+					.attr("cy", USprojection(point)[1])
+					.attr("r", languageScale(points[3]))
+					.style("opacity", 0.5)
+					.style("fill", points[2]);
+				}
+
+				//plot text on the map
+				svgUSmap.append("text")	
+					.attr("x", USprojection(points)[0])
+					.attr("y", USprojection(points)[1]-7)
+					.text(points[4])
+					.attr("fill", points[2])
+					.attr("font-size", "8pt")
+					.style("text-anchor", "middle")
+					.style("opacity", 0.5);
+				
 				
 			});
 
