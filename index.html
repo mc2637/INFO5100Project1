@@ -61,7 +61,7 @@
 			showUSmap(languageData);
 		});
 
-		var colors=["#FFC300", "#FF5733", "#C70039", "#900C3F",  "#581845"];
+		var colors=["#581845", "#900C3F", "#C70039", "#FF5733",  "#FFC300"];
 
 
 		//create new set of coordinates for language locations + colors
@@ -148,7 +148,7 @@
 				.attr("r", 5)
 				.attr("cx", 25)
 				.attr("cy", 430)
-				.style("fill", "#FFC300");
+				.style("fill", colors[0]);
 
 				svgWorldMap.append("text")
 				.attr("x", 35)
@@ -160,7 +160,7 @@
 				.attr("r", 5)
 				.attr("cx", 25)
 				.attr("cy", 455)
-				.style("fill", "#FF5733");
+				.style("fill", colors[1]);
 
 				svgWorldMap.append("text")
 				.attr("x", 35)
@@ -172,7 +172,7 @@
 				.attr("r", 5)
 				.attr("cx", 25)
 				.attr("cy", 480)
-				.style("fill", "#C70039");
+				.style("fill", colors[2]);
 
 				svgWorldMap.append("text")
 				.attr("x", 35)
@@ -184,7 +184,7 @@
 				.attr("r", 5)
 				.attr("cx", 25)
 				.attr("cy", 505)
-				.style("fill", "#900C3F");
+				.style("fill", colors[3]);
 
 				svgWorldMap.append("text")
 				.attr("x", 35)
@@ -196,7 +196,7 @@
 				.attr("r", 5)
 				.attr("cx", 25)
 				.attr("cy", 530)
-				.style("fill", "#581845");
+				.style("fill", colors[4]);
 
 				svgWorldMap.append("text")
 				.attr("x", 35)
@@ -209,8 +209,7 @@
 			USprojection.fitExtent([[0,0], [svgUSmap.attr("width"), svgUSmap.attr("height")]], states);
 
 			var languageExtent = d3.extent(languageData, function (d) { return d.SpeakersNo; });
-			var languageScale = d3.scaleLinear().domain(languageExtent).range([3,2000]);
-			//console.log(languageScale(100000));
+			var languageScale = d3.scaleLinear().domain(languageExtent).range([3,1000]);
 
 			var paths=svgUSmap.selectAll("path.country").data(states.features);
 			paths.enter().append("path").attr("class","country")
@@ -231,7 +230,6 @@
 				.style("fill", points[2]);
 				
 			});
-
 
 		}
 
