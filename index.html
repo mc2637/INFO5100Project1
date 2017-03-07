@@ -20,13 +20,16 @@
 	<h1 style="text-align: center; padding-top: 20px; color: #778899; text-shadow: -1px 0 #fff,0 1px #fff,1px 0 #fff,0 -1px #fff;">Extinct &#38; Endangered Languages Around the World</h1>
 	<p style="text-align: center; color:black"> <b>Group members</b>: Ming Cheng, Yue Xu, Chawisara Uswachoke </p>
 	<p><br><br>
-		<svg id="map" height="600" width="1200"></svg><br>
+		<svg id="map" height="600" width="1200"></svg><br><font size = "5">
 		The map above shows the distribution of the extinct and endangered languages around the world. We can observe that every continent (with Antarctica as an exception, of course) and almost every country has one or more languages that are either vulnerable, endangered, or extinct.
+		<br> It is especially interesting to see that most vulnerable/extinct languages are located along the borders of each country and in the small island countries, such as the southern border of China and the west Coast of United States of America. 
 		<br><br>Now, let's narrow down the scope for a bit and zoom into our country -- the United States of America:
 		<br><br>
 		<svg id="USmap" height="600" width="1200"></svg>
 		<br>
-		Wow, the extinct languages are so concentrated in the west coast.
+		<font size = "5"><b>* The size of each circle is relavant to the number of Speakers of that language</b>
+		<br> Languages with speakers of 5000 or above are labeled on the US map.</font>
+		<br> <br>Wow, the extinct languages are so concentrated in the west coast and the sate of Oklahoma. Let's zoom in to look at the west coast! Wonder what happened to those language?!</font>
 		<script>
 
 		var svgWorldMap = d3.select("#map");
@@ -249,7 +252,7 @@
 					.attr("x", USprojection(points)[0])
 					.attr("y", USprojection(points)[1]-languageScale(points[3])-7)
 					.text(function(d){
-						if (points[0]>-117 || points[1]<22){
+						if (points[3]>5000){
 							return points[4];}
 						})
 					.attr("fill", points[2])
