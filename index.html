@@ -26,7 +26,7 @@
 		<br><br>
 		<svg id="USmap" height="600" width="1200"></svg>
 		<br>
-		Wow, the extinct languages are so concentrated in the west coast.
+		*The area of the circle represents the number of speakers for the language.
 		<br>
 		<svg id="timeline" height="200" width="1200"></svg>
 		<script>
@@ -233,6 +233,78 @@
 				return USpathGenerator(country);
 			});
 
+
+			//Extinct languages
+			svgUSmap.append("circle")
+			.attr("r", 5)
+			.attr("cx", 870)
+			.attr("cy", 500)
+			.style("fill", colors[0])
+			.style("stroke", "white");
+
+			svgUSmap.append("text")
+			.attr("x", 878)
+			.attr("y", 504)
+			.text("Extinct Languages")
+			.attr("font-size", "12px");
+
+			//Critically Endangered Languages
+			svgUSmap.append("circle")
+			.attr("r", 5)
+			.attr("cx", 870)
+			.attr("cy", 515)
+			.style("fill", colors[1])
+			.style("stroke", "white");
+
+			svgUSmap.append("text")
+			.attr("x", 878)
+			.attr("y", 519)
+			.text("Critically Endangered Languages")
+			.attr("font-size", "12px");
+
+			//Severely Endangered Languages
+			svgUSmap.append("circle")
+			.attr("r", 5)
+			.attr("cx", 870)
+			.attr("cy", 530)
+			.style("fill", colors[2])
+			.style("stroke", "white");
+
+			svgUSmap.append("text")
+			.attr("x", 878)
+			.attr("y", 534)
+			.text("Severely Endangered Languages")
+			.attr("font-size", "12px");
+
+			//Definitely Endangered Languages
+			svgUSmap.append("circle")
+			.attr("r", 5)
+			.attr("cx", 870)
+			.attr("cy", 545)
+			.style("fill", colors[3])
+			.style("stroke", "white");
+
+			svgUSmap.append("text")
+			.attr("x", 878)
+			.attr("y", 549)
+			.text("Definitely Endangered Languages")
+			.attr("font-size", "12px");
+
+			//Vulnerable languages
+			svgUSmap.append("circle")
+			.attr("r", 5)
+			.attr("cx", 870)
+			.attr("cy", 560)
+			.style("fill", colors[4])
+			.style("stroke", "white");
+
+			svgUSmap.append("text")
+			.attr("x", 878)
+			.attr("y", 564)
+			.text("Vulnerable Languages")
+			.attr("font-size", "12px");
+			
+
 			var interestingPoints = USdataPoints(languageData);
 
 			interestingPoints.forEach(function (points) {
@@ -300,7 +372,9 @@
 			.attr("y",4)
 			.attr("id","westcoast");
 
+
 			showWestCoast(d3.select("#westcoast"), languageData, states);
+
 
 		}
 
