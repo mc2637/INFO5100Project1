@@ -44,7 +44,7 @@
 		var parseTime = d3.timeParse("%Y");
 
 		function showTimeline(data){
-			var yearExtent = d3.extent(data, function (d) { if(d.Country=="United States of America") return parseTime(d.Year); });
+			var yearExtent = d3.extent(data, function (d) { return parseTime(d.Year); });
 			var timeScale = d3.scaleTime().domain(yearExtent).range([10, 1190]);
 			var timeAxis = d3.axisBottom(timeScale);
 
@@ -122,7 +122,7 @@
 						.style("stroke","black")
 						.style("stroke-width","1px")
 						.style("opacity", 0.8);
-						
+
 						svg.append("text")
 						.attr("x", timeScale(parseTime(d.Year)))
 						.attr("y", i)

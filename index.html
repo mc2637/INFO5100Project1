@@ -8,6 +8,8 @@
 	path.country { fill: #fff; stroke: #888; }
 	#map {display: block; margin:auto; background-color: #ccc}
 	#USmap{display: block; margin:auto; background-color: #ccc;}
+	#timeline{display: block; float:left;}
+	h3{font-size:16pt;}
 </style>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="http://d3js.org/topojson.v2.min.js"></script>
@@ -20,20 +22,23 @@
 	<h1 style="text-align: center; padding-top: 20px; color: #778899; text-shadow: -1px 0 #fff,0 1px #fff,1px 0 #fff,0 -1px #fff;">Extinct &#38; Endangered Languages Around the World</h1>
 	<p style="text-align: center; color:black"> <b>Group members</b>: Ming Cheng, Yue Xu, Chawisara Uswachoke </p>
 	<p><br><br>
-		<svg id="map" height="600" width="1200"></svg><br><font size = "5">
+		<svg id="map" height="600" width="1200"></svg><br><font size = "3">
 		The map above shows the distribution of the extinct and endangered languages around the world. We can observe that every continent (with Antarctica as an exception, of course) and almost every country has one or more languages that are either vulnerable, endangered, or extinct.
 		<br> It is especially interesting to see that most vulnerable/extinct languages are located along the borders of each country and in the small island countries, such as the southern border of China and the west Coast of United States of America. 
 		<br><br>Now, let's narrow down the scope for a bit and zoom into our country -- the United States of America:
 		<br><br>
 		<svg id="USmap" height="600" width="1200"></svg>
 		<br>
-		<font size = "5"><b>* The size of each circle is relavant to the number of Speakers of that language</b>
-		<br> Languages with speakers of 5000 or above are labeled on the US map.</font>
-		<br> <br>Wow, the extinct languages are so concentrated in the west coast and the sate of Oklahoma. Let's zoom in to look at the west coast! Wonder what happened to those language?!</font>
+		<font size = "3"><b>* The size of each circle is relavant to the number of Speakers of that language</b>
+		<br><b>* Languages with speakers of 5000 or above are labeled on the US map.</b></font>
+		<br> <br>Wow, the extinct languages are so concentrated in the west coast and the sate of Oklahoma. Let's zoom in to look at the west coast! Wonder what happened to those languages?!</font>
 		<br>
-		<br>
-		<font size = "7"> Oh No! Languages are extincting every minute now! stop learning Java, learn a real Language!
-		</font>
+		<svg id="timeline" height=300 width="300"></svg><br>
+		<font size = "3"> We suspect that this might have been because the west coast used to be <a href="https://cdn0.vox-cdn.com/thumbor/qikf-ogRVfPnSd9JPRZOt5h3tTY=/800x0/filters:no_upscale()/cdn0.vox-cdn.com/uploads/chorus_asset/file/4103386/Screen_Shot_2015-09-28_at_10.36.08_AM.0.png">part of Mexico and Canada</a> during the 1900s; but this is just a speculation.
+		<br><br>The graph on the left shows the cumulative number of languages that became extinct over time. Note that the years are approximated for some years, since it is not easy to track the exact dates when a language dies out. We can see that <b>a lot</b> of languages are becoming extinct in the recent years.
+		<br><br>So as a conclusion...
+		</font><br>
+		<h3>Languages are extincting every minute now! stop learning Java, learn a real language!</h4>
 		<br>
 
 		<script>
@@ -345,11 +350,7 @@
 				svgUSmap.append("text")	
 					.attr("x", USprojection(points)[0])
 					.attr("y", USprojection(points)[1]-7)
-					.text(function(d){
-						if(points[2] == colors[0]){
-							return points[4];
-						}
-					})
+					.text(points[4])
 					.attr("fill", points[2])
 					.attr("font-size", "9pt")
 					.style("text-anchor", "middle")
@@ -359,6 +360,71 @@
 				
 			});
 
+		}
+
+		//line graph for extinction timeline
+		var svgLine = d3.select("#timeline");
+		var dataExtinct;
+
+		var parseLine = function(line) {
+			return{
+			    Year: line["Year of Extinction"],
+			    Frequency: line["# Extinct"],
+			    SumFreq: line["Sum of Frequency"],
+			}
+		};
+
+		//reading the csv file and call graph generator function
+		d3.queue()
+		.defer(d3.csv, "extinction.csv", parseLine)
+		.await(function(error, extinctionData){
+			dataExtinct=extinctionData;
+			showTimeline(dataExtinct);
+		});
+
+		var parseTime = d3.timeParse("%Y");
+
+
+		//create line graph
+		function showTimeline(data){
+			var yearExtent = d3.extent(data, function (d) { return parseTime(d.Year); });
+			var frequencyExtent=d3.extent(data, function(d){return parseInt(d.SumFreq); });
+
+			console.log(yearExtent);
+			
+			var timeScale = d3.scaleTime().domain(yearExtent).range([40, 260]);
+			var timeAxis = d3.axisBottom(timeScale);
+
+			var frequencyScale = d3.scaleLinear().domain(frequencyExtent).range([260, 40]);
+			var frequencyAxis = d3.axisLeft(frequencyScale);
+
+			svgLine.append("text")
+			.attr("x", 150)
+			.attr("y", 292)
+			.text("Year")
+			.attr("font-size", "11pt")
+			.style("text-anchor", "middle");
+
+			svgLine.append("text")
+			.attr("x", -143)
+			.attr("y", 12)
+			.text("Cumulative # of Extinct Languages")
+			.attr("font-size", "11pt")
+			.style("text-anchor", "middle")
+			.attr("transform", "rotate(-90)");
+
+			var plot = svgLine.append("g");
+			plot.append("g").attr("transform","translate(0,260)").call(timeAxis);
+			plot.append("g").attr("transform","translate(40,0)").call(frequencyAxis);
+
+			var pathGenerator = d3.line()
+			.x(function (d) { return timeScale(parseTime(d.Year)); })
+			.y(function (d) { return frequencyScale(parseInt(d.SumFreq)); });
+
+			svgLine.append("path").attr("d", pathGenerator(data))
+			.attr("stroke", "#2f6088")
+			.attr("stroke-width", 4)
+			.attr("fill", "none");
 		}
 
 		</script>
