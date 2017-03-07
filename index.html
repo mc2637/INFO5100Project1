@@ -30,7 +30,7 @@
 		<svg id="USmap" height="600" width="1200"></svg>
 		<br>
 		<font size = "3"><b>* The area of the circle represents the number of speakers for the language.</b>
-		<br><b>* Languages with speakers of 5000 or above are labeled on the US map.</b></font>
+		<br><b>* Languages with speakers of 3000 or above are labeled on the US map.</b></font>
 		<br> <br>Wow, the extinct languages are so concentrated in the west coast and the sate of Oklahoma. Let's zoom in to look at the west coast! Wonder what happened to those languages?!</font>
 		<br>
 		<svg id="timeline" height=300 width="300"></svg><br>
@@ -39,9 +39,6 @@
 		<br><br>So as a conclusion...
 		</font><br>
 		<h3>&#9888; Languages are extincting every minute now! Stop learning Java; learn a real language!</h3>
-
-		<br>
-		<br>
 
 		<script>
 
@@ -87,7 +84,7 @@
 		var colors=["#581845", "#900C3F", "#C70039", "#FF5733",  "#FFC300"];
 
 
-		//create new set of coordinates for language locations + colors
+		//create new set of coordinates for language locations + colors + name of Language
 		var dataPoints = function(data){
 			var result = [];
 			data.forEach(function(d){
@@ -113,7 +110,7 @@
 			return result;
 		}
 
-		//create new set of coordinates for language locations + colors + number of speakers
+		//create new set of coordinates for language locations + colors + number of speakers + language name
 		var USdataPoints = function(data){
 
 			var result = [];
@@ -145,8 +142,10 @@
 			return result;
 		}
 
+		//show World map of endangered or extinct languages
 		function showMap(languageData) {
 
+			//Map Projection
 			worldProjection.fitExtent([[0,0], [svgWorldMap.attr("width"), svgWorldMap.attr("height")]], countries);
 
 			var paths=svgWorldMap.selectAll("path.country").data(countries.features);
@@ -167,6 +166,7 @@
 				.style("fill", points[2])
 				.style("stroke", "white");
 
+				//Legend of world map
 				//Extinct languages
 				svgWorldMap.append("circle")
 				.attr("r", 5)
@@ -234,9 +234,13 @@
 			});
 		}
 
+		//Show map of US
 		function showUSmap(languageData, states){
+
+			//map projection
 			USprojection.fitExtent([[400,0], [svgUSmap.attr("width"), svgUSmap.attr("height")]], states);
 
+			//Scale number of speakers to different size of circles
 			var languageExtent = d3.extent(languageData, function (d) { return d.SpeakersNo; });
 			var languageScale = d3.scaleLinear().domain(languageExtent).range([3,4000]);
 
@@ -247,7 +251,7 @@
 				return USpathGenerator(country);
 			});
 
-
+			//Legend for US map
 			//Extinct languages
 			svgUSmap.append("circle")
 			.attr("r", 5)
@@ -318,7 +322,7 @@
 			.text("Vulnerable Languages")
 			.attr("font-size", "12px");
 			
-
+			//plot data points on the map
 			var interestingPoints = USdataPoints(languageData);
 
 			interestingPoints.forEach(function (points) {
@@ -332,7 +336,7 @@
 					.style("fill", points[2])
 					.style("stroke", "white");
 
-				//plot text on the map
+				//plot text on the map, on top of each representing circle
 				svgUSmap.append("text")	
 					.attr("x", USprojection(points)[0])
 					.attr("y", USprojection(points)[1]-languageScale(points[3])-7)
@@ -386,19 +390,21 @@
 			.attr("y",4)
 			.attr("id","westcoast");
 
-
 			showWestCoast(d3.select("#westcoast"), languageData, states);
 
 
 		}
 
+		//Map of zoomed in West Coast
 		function showWestCoast(svgUSmap, languageData, states){
+			//Map Projection
 			var USprojection = d3.geoAlbersUsa();
 			var USpathGenerator = d3.geoPath().projection(USprojection);
 			var states;
 
 			USprojection.fitExtent([[-100,-800], [3000,1800]], states);
 
+			//scale of number of speakers
 			var languageExtent = d3.extent(languageData, function (d) { return d.SpeakersNo; });
 			var languageScale = d3.scaleLinear().domain(languageExtent).range([3,4000]);
 
@@ -411,6 +417,7 @@
 
 			var interestingPoints = USdataPoints(languageData);
 
+			//plot data points onto the west coast map
 			interestingPoints.forEach(function (points) {
 				var point=[points[0],points[1]];
 
