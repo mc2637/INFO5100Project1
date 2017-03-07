@@ -20,15 +20,22 @@
 	<h1 style="text-align: center; padding-top: 20px; color: #778899; text-shadow: -1px 0 #fff,0 1px #fff,1px 0 #fff,0 -1px #fff;">Extinct &#38; Endangered Languages Around the World</h1>
 	<p style="text-align: center; color:black"> <b>Group members</b>: Ming Cheng, Yue Xu, Chawisara Uswachoke </p>
 	<p><br><br>
-		<svg id="map" height="600" width="1200"></svg><br>
+		<svg id="map" height="600" width="1200"></svg><br><font size = "5">
 		The map above shows the distribution of the extinct and endangered languages around the world. We can observe that every continent (with Antarctica as an exception, of course) and almost every country has one or more languages that are either vulnerable, endangered, or extinct.
+		<br> It is especially interesting to see that most vulnerable/extinct languages are located along the borders of each country and in the small island countries, such as the southern border of China and the west Coast of United States of America. 
 		<br><br>Now, let's narrow down the scope for a bit and zoom into our country -- the United States of America:
 		<br><br>
 		<svg id="USmap" height="600" width="1200"></svg>
 		<br>
-		*The area of the circle represents the number of speakers for the language.
+		<font size = "5"><b>* The area of the circle represents the number of speakers for the language.</b>
+		<br> Languages with speakers of 5000 or above are labeled on the US map.</font>
+		<br> <br>Wow, the extinct languages are so concentrated in the west coast and the sate of Oklahoma. Let's zoom in to look at the west coast! Wonder what happened to those language?!</font>
 		<br>
-		<svg id="timeline" height="200" width="1200"></svg>
+		<br>
+		<font size = "7"> Oh No! Languages are extincting every minute now! stop learning Java, learn a real Language!
+		</font>
+		<br>
+
 		<script>
 
 		var svgWorldMap = d3.select("#map");
@@ -323,7 +330,7 @@
 					.attr("x", USprojection(points)[0])
 					.attr("y", USprojection(points)[1]-languageScale(points[3])-7)
 					.text(function(d){
-						if (points[0]>-117 || points[1]<22){
+						if (points[3]>3000){
 							return points[4];}
 						})
 					.attr("fill", points[2])
@@ -412,7 +419,11 @@
 				svgUSmap.append("text")	
 					.attr("x", USprojection(points)[0])
 					.attr("y", USprojection(points)[1]-7)
-					.text(points[4])
+					.text(function(d){
+						if(points[2] == colors[0]){
+							return points[4];
+						}
+					})
 					.attr("fill", points[2])
 					.attr("font-size", "9pt")
 					.style("text-anchor", "middle")
@@ -423,123 +434,6 @@
 			});
 
 		}
-
-		var svg = d3.select("#timeline");
-		var data;
-
-		var parseRow = function(line) {
-		
-			return{
-				Language: line["Name in English"], //name of the language
-			    Year: line["Year of Extinction"],
-			    Frequency: line["Frequency"],
-			    Country: line["Countries"],
-			}
-		};
-
-		d3.queue()
-		.defer(d3.csv, "extinction-timeline.csv", parseRow)
-		.await(function(error, extinctionData){
-			data=extinctionData;
-			showTimeline(data);
-		});
-
-		var parseTime = d3.timeParse("%Y");
-
-		function showTimeline(data){
-			var yearExtent = d3.extent(data, function (d) { if(d.Country=="United States of America") return parseTime(d.Year); });
-			var timeScale = d3.scaleTime().domain(yearExtent).range([10, 1190]);
-			var timeAxis = d3.axisBottom(timeScale);
-
-			svg.append("g").attr("transform","translate(0,60)").call(timeAxis);
-
-			var side=true;
-			var i=50;
-			var prevYear;
-			var y=43;
-
-			data.forEach(function (d) {
-				if(d.Country=="United States of America"){
-					console.log(d.Country);
-					if(prevYear<=d.Year+5 && prevYear>=d.Year-5){
-						if(side){
-							i-=10;
-							y-=8;
-							side=false;
-						}else{
-							i+=55;
-							y+=50;
-							side=true;
-						}
-						
-					}else{
-						i=50;
-						y=43;
-						prevYear=d.Year;
-					}
-
-					if(d.Language=="Eyak"){
-						svg.append("text")
-						.attr("x", timeScale(parseTime(d.Year))-10)
-						.attr("y", i)
-						.style("font-family","Calibri")
-						.style("font-size",12)
-						.style("text-anchor","middle")
-						.text(d.Language);
-
-						svg.append("line")
-						.attr("x1", timeScale(parseTime(d.Year)))
-						.attr("y1", y)
-						.attr("x2", timeScale(parseTime(d.Year)))
-						.attr("y2", 60)
-						.style("stroke","black")
-						.style("stroke-width","1px")
-						.style("opacity", 0.8);
-
-					}else if(d.Language=="Cayuse" || d.Language=="Mattole"){
-
-						svg.append("line")
-						.attr("x1", timeScale(parseTime(d.Year))+8)
-						.attr("y1", i)
-						.attr("x2", timeScale(parseTime(d.Year)))
-						.attr("y2", 60)
-						.style("stroke","black")
-						.style("stroke-width","1px")
-						.style("opacity", 0.8);
-
-						svg.append("text")
-						.attr("x", timeScale(parseTime(d.Year))+10)
-						.attr("y", i)
-						.style("font-family","Calibri")
-						.style("font-size",12)
-						.style("text-anchor","middle")
-						.text(d.Language);
-
-					}else{
-
-						svg.append("line")
-						.attr("x1", timeScale(parseTime(d.Year)))
-						.attr("y1", y)
-						.attr("x2", timeScale(parseTime(d.Year)))
-						.attr("y2", 60)
-						.style("stroke","black")
-						.style("stroke-width","1px")
-						.style("opacity", 0.8);
-						
-						svg.append("text")
-						.attr("x", timeScale(parseTime(d.Year)))
-						.attr("y", i)
-						.style("font-family","Calibri")
-						.style("font-size",12)
-						.style("text-anchor","middle")
-						.text(d.Language);
-
-					}
-					
-				}
-			});
-		}
-
 
 		</script>
 	</p>
