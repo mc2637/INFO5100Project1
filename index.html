@@ -29,10 +29,11 @@
 		<br>
 		<font size = "5"><b>* The area of the circle represents the number of speakers for the language.</b>
 		<br> Languages with speakers of 5000 or above are labeled on the US map.</font>
-		<br> <br>Wow, the extinct languages are so concentrated in the west coast and the sate of Oklahoma. Let's zoom in to look at the west coast! Wonder what happened to those language?!</font>
+		<br> <br>Wow, the extinct languages are so concentrated in the west coast and the sate of Oklahoma. Let's zoom in to look at the west coast! Wonder what happened to those language?!
+		<br> Look all the languages at west coast. Most of them are Severely or Critically Endangered, or even Extincted. </font>
 		<br>
 		<br>
-		<font size = "7"> Oh No! Languages are extincting every minute now! stop learning Java, learn a real Language!
+		<font size = "7">&#9888; Oh No! Languages are extincting every minute now! stop learning Java, learn a real Language!
 		</font>
 		<br>
 
@@ -419,11 +420,7 @@
 				svgUSmap.append("text")	
 					.attr("x", USprojection(points)[0])
 					.attr("y", USprojection(points)[1]-7)
-					.text(function(d){
-						if(points[2] == colors[0]){
-							return points[4];
-						}
-					})
+					.text(points[4])
 					.attr("fill", points[2])
 					.attr("font-size", "9pt")
 					.style("text-anchor", "middle")
