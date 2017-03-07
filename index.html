@@ -235,23 +235,6 @@
 
 			interestingPoints.forEach(function (points) {
 				var point=[points[0],points[1]];
-				// if(points[4]=="Navajo"){
-				// 	svgUSmap.append("circle")
-				// 	.attr("cx", USprojection(point)[0])
-				// 	.attr("cy", USprojection(point)[1])
-				// 	.attr("r", 20)
-				// 	.style("opacity", 0.8)
-				// 	.style("fill", points[2])
-				// 	.style("stroke", "white");
-				// }else{
-				// 	svgUSmap.append("circle")
-				// 	.attr("cx", USprojection(point)[0])
-				// 	.attr("cy", USprojection(point)[1])
-				// 	.attr("r", languageScale(points[3]))
-				// 	.style("opacity", 0.8)
-				// 	.style("fill", points[2])
-				// 	.style("stroke", "white");
-				// }
 
 				svgUSmap.append("circle")
 					.attr("cx", USprojection(point)[0])
@@ -262,16 +245,19 @@
 					.style("stroke", "white");
 
 				//plot text on the map
-				// svgUSmap.append("text")	
-				// 	.attr("x", USprojection(points)[0])
-				// 	.attr("y", USprojection(points)[1]-7)
-				// 	.text(points[4])
-				// 	.attr("fill", points[2])
-				// 	.attr("font-size", "7pt")
-				// 	.style("text-anchor", "middle")
-				// 	.style("opacity", 0.9)
-				// 	.style("stroke", "grey")
-				// 	.style("stroke-width", "0.1px");
+				svgUSmap.append("text")	
+					.attr("x", USprojection(points)[0])
+					.attr("y", USprojection(points)[1]-languageScale(points[3])-7)
+					.text(function(d){
+						if (points[0]>-117 || points[1]<22){
+							return points[4];}
+						})
+					.attr("fill", points[2])
+					.attr("font-size", "7pt")
+					.style("text-anchor", "middle")
+					.style("opacity", 0.9)
+					.style("stroke", "grey")
+					.style("stroke-width", "0.1px");
 				
 			});
 
