@@ -9,6 +9,8 @@
 	#map {display: block; margin:auto; background-color: #ccc}
 	#USmap{display: block; margin:auto; background-color: #ccc;}
 	#timeline{display: block; float:left;}
+	#circleLegend{display: block; margin:auto; font-size:8pt;}
+	circle{fill:#FFC300; opacity:0.7;stroke:white;}
 	h3{font-size:15.5pt;}
 </style>
 <script src="https://d3js.org/d3.v4.min.js"></script>
@@ -16,6 +18,8 @@
 <script src="https://d3js.org/d3-array.v1.min.js"></script>
 <script src="https://d3js.org/d3-geo.v1.min.js"></script>
 <script src="https://d3js.org/d3-geo-projection.v1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.21.0/d3-legend.js"></script>
+
 </head>
 
 <body>
@@ -28,6 +32,8 @@
 		<br><br>Now, let's narrow down the scope for a bit and zoom into our country -- the United States of America:
 		<br><br>
 		<svg id="USmap" height="600" width="1200"></svg>
+		
+		<svg id="circleLegend" height="155" width="500"></svg>
 		<br>
 		<font size = "3"><b>* The area of the circle represents the number of speakers for the language.</b>
 		<br><b>* Languages with speakers of 3000 or above are labeled on the US map.</b></font>
@@ -136,8 +142,6 @@
 					}
 				}
 			});
-
-			console.log(result);
 
 			return result;
 		}
@@ -390,8 +394,27 @@
 			.attr("y",4)
 			.attr("id","westcoast");
 
-			showWestCoast(d3.select("#westcoast"), languageData, states);
 
+			//legend for circle sizes; code reference: http://d3-legend.susielu.com/
+			var circleScale =  d3.scaleLinear().domain(languageExtent).range([3, 67]);
+
+			var svgCircleLegend=d3.select("#circleLegend");
+
+			svgCircleLegend.append("g")
+				.attr("id", "legend").attr("transform", "translate(10, 70)");;
+
+			var circleLegend = d3.legendSize()
+			  .scale(circleScale)
+			  .shape('circle')
+			  .shapePadding(15)
+			  .labelOffset(15)
+			  .orient('horizontal');
+
+			svgCircleLegend.select("#legend")
+			  .call(circleLegend);
+
+
+			showWestCoast(d3.select("#westcoast"), languageData, states);
 
 		}
 
@@ -442,8 +465,10 @@
 					.style("stroke-width", "0.1px");
 				
 			});
+			
 
 		}
+
 
 		//line graph for extinction timeline
 		var svgLine = d3.select("#timeline");
@@ -473,8 +498,6 @@
 			var yearExtent = d3.extent(data, function (d) { return parseTime(d.Year); });
 			var frequencyExtent=d3.extent(data, function(d){return parseInt(d.SumFreq); });
 
-			console.log(yearExtent);
-			
 			var timeScale = d3.scaleTime().domain(yearExtent).range([40, 260]);
 			var timeAxis = d3.axisBottom(timeScale);
 
@@ -508,7 +531,8 @@
 			.attr("stroke", "#581845")
 			.attr("stroke-width", 4)
 			.attr("fill", "none");
-		}
+		}       
+		       
 
 		</script>
 	</p>
