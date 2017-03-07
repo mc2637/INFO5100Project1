@@ -9,8 +9,6 @@
 	#map {display: block; margin:auto; background-color: #ccc}
 	#USmap{display: block; margin:auto; background-color: #ccc;}
 	#timeline{display: block; float:left;}
-	#circleLegend{display: block; margin:auto; font-size:8pt;}
-	circle{fill:#FFC300; opacity:0.7;stroke:white;}
 	h3{font-size:15.5pt;}
 </style>
 <script src="https://d3js.org/d3.v4.min.js"></script>
@@ -25,18 +23,15 @@
 <body>
 	<h1 style="text-align: center; padding-top: 20px; color: #778899; text-shadow: -1px 0 #fff,0 1px #fff,1px 0 #fff,0 -1px #fff;">Extinct &#38; Endangered Languages Around the World</h1>
 	<p style="text-align: center; color:black"> <b>Group members</b>: Ming Cheng, Yue Xu, Chawisara Uswachoke </p>
-	<p><br><br>
+	<p><br>
 		<svg id="map" height="600" width="1200"></svg><br><font size = "3">
 		The map above shows the distribution of the extinct and endangered languages around the world. We can observe that every continent (with Antarctica as an exception, of course) and almost every country has one or more languages that are either vulnerable, endangered, or extinct.
-		<br> It is especially interesting to see that most vulnerable/extinct languages are located along the borders of each country and in the small island countries, such as the southern border of China and the west Coast of United States of America. 
+		<br><br> It is especially interesting to see that most vulnerable/extinct languages are located along the borders of each country and in the small island countries, such as the southern border of China and the west Coast of United States of America. 
 		<br><br>Now, let's narrow down the scope for a bit and zoom into our country -- the United States of America:
 		<br><br>
 		<svg id="USmap" height="600" width="1200"></svg>
-		
-		<svg id="circleLegend" height="155" width="500"></svg>
-		<br>
 		<font size = "3"><b>* The area of the circle represents the number of speakers for the language.</b>
-		<br><b>* Languages with speakers of 3000 or above are labeled on the US map.</b></font>
+		<br><b>* Languages with number of speakers of 3000 or above are labeled on the US map.</b></font>
 		<br> <br>Wow, the extinct languages are so concentrated in the west coast and the sate of Oklahoma. Let's zoom in to look at the west coast! Wonder what happened to those languages?!</font>
 		<br>
 		<svg id="timeline" height=300 width="300"></svg><br>
@@ -45,7 +40,7 @@
 		<br><br>So as a conclusion...
 		</font><br>
 		<h3>&#9888; Languages are extincting every minute now! Stop learning Java; learn a real language!</h3>
-
+		<br><br>
 		<script>
 
 		var svgWorldMap = d3.select("#map");
@@ -74,6 +69,7 @@
 			}
 		};
 
+		//read csv files and call showmap functions
 		d3.queue()
 		.defer(d3.json, "world-50m.json")
 		.defer(d3.csv, "data.csv", parseRow)
@@ -162,6 +158,7 @@
 
 			interestingPoints.forEach(function (points) {
 
+				//draw data points on map
 				svgWorldMap.append("circle")
 				.attr("cx", worldProjection(points)[0])
 				.attr("cy", worldProjection(points)[1])
@@ -248,6 +245,7 @@
 			var languageExtent = d3.extent(languageData, function (d) { return d.SpeakersNo; });
 			var languageScale = d3.scaleLinear().domain(languageExtent).range([3,4000]);
 
+			//draw US map
 			var paths=svgUSmap.selectAll("path.country").data(states.features);
 			paths.enter().append("path").attr("class","country")
 			.merge(paths)
@@ -376,7 +374,7 @@
 				.style("stroke-width","3px")
 				.style("opacity", 0.9);
 
-			//paint on top of US map
+			//paint on top of US map to make the background blend in
 			svgUSmap.append("rect")
 			.attr("height",600)
 			.attr("width", 375)
@@ -386,32 +384,13 @@
 			.style("stroke", "white")
 			.style("stroke-width", "10px");
 
-			//zoomed in map of west coast
+			//svg for zoomed in map of west coast
 			svgUSmap.append("svg")
 			.attr("height",593)
 			.attr("width", 375)
 			.attr("x", 0)
 			.attr("y",4)
 			.attr("id","westcoast");
-
-
-			//legend for circle sizes; code reference: http://d3-legend.susielu.com/
-			var circleScale =  d3.scaleLinear().domain(languageExtent).range([3, 67]);
-
-			var svgCircleLegend=d3.select("#circleLegend");
-
-			svgCircleLegend.append("g")
-				.attr("id", "legend").attr("transform", "translate(10, 70)");;
-
-			var circleLegend = d3.legendSize()
-			  .scale(circleScale)
-			  .shape('circle')
-			  .shapePadding(15)
-			  .labelOffset(15)
-			  .orient('horizontal');
-
-			svgCircleLegend.select("#legend")
-			  .call(circleLegend);
 
 
 			showWestCoast(d3.select("#westcoast"), languageData, states);
@@ -469,8 +448,7 @@
 
 		}
 
-
-		//line graph for extinction timeline
+		//svg for line graph of extinction timeline
 		var svgLine = d3.select("#timeline");
 		var dataExtinct;
 
@@ -493,17 +471,20 @@
 		var parseTime = d3.timeParse("%Y");
 
 
-		//create line graph
+		//create line graph for extinct languages timeline
 		function showTimeline(data){
 			var yearExtent = d3.extent(data, function (d) { return parseTime(d.Year); });
 			var frequencyExtent=d3.extent(data, function(d){return parseInt(d.SumFreq); });
 
+			//x axis: year
 			var timeScale = d3.scaleTime().domain(yearExtent).range([40, 260]);
 			var timeAxis = d3.axisBottom(timeScale);
 
+			//y axis: cumulative frequency of # extinct languages
 			var frequencyScale = d3.scaleLinear().domain(frequencyExtent).range([260, 40]);
 			var frequencyAxis = d3.axisLeft(frequencyScale);
 
+			//x axis label
 			svgLine.append("text")
 			.attr("x", 150)
 			.attr("y", 292)
@@ -511,6 +492,7 @@
 			.attr("font-size", "11pt")
 			.style("text-anchor", "middle");
 
+			//y axis label
 			svgLine.append("text")
 			.attr("x", -143)
 			.attr("y", 12)
@@ -519,6 +501,7 @@
 			.style("text-anchor", "middle")
 			.attr("transform", "rotate(-90)");
 
+			//draw line
 			var plot = svgLine.append("g");
 			plot.append("g").attr("transform","translate(0,260)").call(timeAxis);
 			plot.append("g").attr("transform","translate(40,0)").call(frequencyAxis);
